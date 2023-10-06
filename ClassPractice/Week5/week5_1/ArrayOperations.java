@@ -1,4 +1,4 @@
-package ClassPractice.Week5;
+package ClassPractice.Week5.week5_1;
 
 public class ArrayOperations {
 
