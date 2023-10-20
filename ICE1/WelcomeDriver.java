@@ -8,9 +8,9 @@ package ICE1;
 
 import java.util.Scanner;
 
-public class WelcomeDriver{
+public class WelcomeDriver {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         //welcome message
         System.out.println("Welcome to COSC 1200 - ICE 1");
@@ -35,6 +35,6 @@ public class WelcomeDriver{
         }
 
 
-
     }
 }
+
