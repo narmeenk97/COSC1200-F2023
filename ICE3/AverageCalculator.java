@@ -5,91 +5,93 @@
 //              while adding some exceptions using try and catch
 package ICE3;
 
-import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class AverageCalculator {
 
-    public static void main(String[] args) {
+    private static class NonNumericInputException extends Exception {
+        public NonNumericInputException(String message) {
+            super(message);
+        }
+    }
 
+    private static class NegativeInputException extends Exception {
+        public NegativeInputException(String message) {
+            super(message);
+        }
+    }
+
+    private static class IntegerTooBigException extends Exception {
+        public IntegerTooBigException(String message) {
+            super(message);
+        }
+    }
+
+    private static int validateInput(Scanner scanner, String prompt) throws NonNumericInputException,
+            NegativeInputException {
+        try {
+            System.out.print(prompt);
+            if (scanner.hasNextInt()) {
+                int input = scanner.nextInt();
+                if (input > 0) {
+                    if (input <= Integer.MAX_VALUE) {
+                        return input;
+                    } else {
+                        throw new IntegerTooBigException("Please enter a smaller value.");
+                    }
+                } else {
+                    throw new NegativeInputException("Please enter a positive value.");
+                }
+            } else {
+                throw new NonNumericInputException("Please enter a valid numeric value.");
+            }
+        } catch (java.util.InputMismatchException e) {
+            throw new NonNumericInputException("Please enter a valid numeric value.");
+        } catch (IntegerTooBigException e) {
+            throw new RuntimeException(e);
+        } finally {
+            scanner.nextLine();
+        }
+    }
+
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int numofValues = getnumofValues(scanner);
-        int sum = getValuesandCalculateSum(scanner, numofValues);
-        double average = calculateAverage(sum, numofValues);
+
+        // Prompt the user to enter the number of values
+        int numbOfValues = 0;
+        boolean validInput = false;
+
+        while (!validInput) {
+            try {
+                numbOfValues = validateInput(scanner, "How many values do you want to enter: ");
+                validInput = true;
+            } catch (NegativeInputException | NonNumericInputException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        // Prompt the user to enter each value and calculate the average
+        int sum = 0;
+
+        for (int i = 0; i < numbOfValues; i++) {
+            boolean validValue = false;
+
+            while (!validValue) {
+                try {
+                    int value = validateInput(scanner, "Enter value " + (i + 1) + ": ");
+                        sum += value;
+                        validValue = true;
+                } catch (NegativeInputException | NonNumericInputException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+        }
+
+        // Calculate and display the average
+        double average = (double) sum / numbOfValues;
         System.out.println("The average is: " + average);
+
         scanner.close();
     }
-
-    /**
-     * Function to get user input regarding the number of values to be entered
-     * @param scanner
-     * @return The number of values the user wants to enter
-     */
-    private static int getnumofValues(Scanner scanner) {
-        int numofValues = 0;
-        
-        while (true) {
-            try {
-                System.out.println("How many values do you want to enter: ");
-                numofValues = scanner.nextInt();
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid numeric value.");
-                scanner.nextLine();
-            }
-        }
-        return numofValues;
-    }
-
-    /**
-     * Function to get the values from the user and calculate the sum
-     * @param scanner
-     * @param numofValues
-     * @return The sum of the values entered by the user
-     */
-    private static int getValuesandCalculateSum(Scanner scanner, int numofValues) {
-        int sum = 0;
-        
-        for (int i = 1; i <= numofValues; i++) {
-            int value = getValidValue(scanner, i);
-            sum += value;
-        }
-        return sum;
-    }
-
-    /**
-     * Function to get and validate the values from the user
-     * @param scanner
-     * @param index
-     * @return The values inputted by the user
-     */
-    private static int getValidValue(Scanner scanner, int index) {
-        int value = 0;
-
-        while (true) {
-            try {
-                System.out.println("Enter value #" + index + ": ");
-                value = scanner.nextInt();
-                if (value >= 0) {
-                    break;
-                } else {
-                    System.out.println("Please enter a positive value.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid numeric value.");
-                scanner.nextLine();
-            }
-        }
-        return value;
-    }
-
-    /**
-     * Function to calculate the average
-     * @param sum
-     * @param numofValues
-     * @return The average of the values
-     */
-    private static double calculateAverage(int sum, int numofValues) {
-        return (double) sum / numofValues;
-    }
-    
 }
