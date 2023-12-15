@@ -22,7 +22,7 @@ public class ProductDriver {
 
         // Adding products
         try {
-            Products product1 = new Products(1001, " ", 369.99, 5,
+            Products product1 = new Products(1001, "Gaming Console", 369.99, 5,
                     10, "Handle with care");
             productsList.add(product1);
             Products product2 = new Products(1002, "Ear Buds", 149.99,
